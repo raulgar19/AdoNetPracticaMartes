@@ -15,44 +15,41 @@ using static System.ComponentModel.Design.ObjectSelectorEditor;
 //	select * from HOSPITAL
 //go
 
-//CREATE PROCEDURE SP_ALL_EMPLEADOS_HOSPITAL
+//create procedure SP_ALL_EMPLEADOS_HOSPITAL
 //    @nombreHospital nvarchar(50),
-//    @totalEmpleados int OUTPUT,
-//    @sumaSalarios int OUTPUT,
-//    @mediaSalarios int OUTPUT
-//AS
-//BEGIN
-//    SET NOCOUNT ON;
+//    @sumaSalarial int output,
+//    @mediaSalarial int output,
+//    @numPersonas int output     
+//as
+//begin
+//    declare @hospitalCod int;
+//select @hospitalCod = HOSPITAL_COD 
+//    from HOSPITAL 
+//    where NOMBRE = @nombreHospital;
 
-//DECLARE @hospitalCod int;
-
-//SELECT @hospitalCod = HOSPITAL_COD 
-//    FROM HOSPITAL 
-//    WHERE NOMBRE = @nombreHospital;
-
-//DECLARE @DatosEmpleados TABLE (
+//declare @MIS_EMPLEADOS table (
 //        APELLIDO nvarchar(50),
 //    OFICIO nvarchar(50),
 //    SALARIO int,
 //    TIPO nvarchar(20)
 //    );
 
-//INSERT INTO @DatosEmpleados
-//    SELECT APELLIDO, ESPECIALIDAD, SALARIO, 'DOCTOR'
-//    FROM DOCTOR WHERE HOSPITAL_COD = @hospitalCod
-//    UNION ALL
-//    SELECT APELLIDO, FUNCION, SALARIO, 'PLANTILLA'
-//    FROM PLANTILLA WHERE HOSPITAL_COD = @hospitalCod;
+//insert into @MIS_EMPLEADOS
+//    select APELLIDO, ESPECIALIDAD, SALARIO, 'DOCTOR' 
+//    from DOCTOR where HOSPITAL_COD = @hospitalCod
+//    union ALL
+//    select APELLIDO, FUNCION, SALARIO, 'PLANTILLA' 
+//    from PLANTILLA where HOSPITAL_COD = @hospitalCod;
 
-//SELECT
-//    @totalEmpleados = COUNT(*),
-//    @sumaSalarios = ISNULL(SUM(SALARIO), 0),
-//    @mediaSalarios = ISNULL(AVG(SALARIO), 0)
-//    FROM @DatosEmpleados;
+//select
+//    @sumaSalarial = isnull(SUM(SALARIO), 0),
+//    @mediaSalarial = isnull(AVG(SALARIO), 0),
+//    @numPersonas = COUNT(*)
+//    from @MIS_EMPLEADOS;
 
-//SELECT* FROM @DatosEmpleados;
-//END
-//GO
+//select* from @MIS_EMPLEADOS;
+//end
+//go
 #endregion
 
 namespace AdoNetPracticaMartes.Repositories
@@ -106,15 +103,15 @@ namespace AdoNetPracticaMartes.Repositories
             string sql = "SP_ALL_EMPLEADOS_HOSPITAL";
             SqlParameter pamNombre = new SqlParameter("@nombreHospital", nombre);
             SqlParameter pamSuma = new SqlParameter();
-            pamSuma.ParameterName = "@sumaSalarios";
+            pamSuma.ParameterName = "@sumaSalarial";
             pamSuma.Direction = ParameterDirection.Output;
             pamSuma.SqlDbType = SqlDbType.Int;
             SqlParameter pamMedia = new SqlParameter();
-            pamMedia.ParameterName = "@mediaSalarios";
+            pamMedia.ParameterName = "@mediaSalarial";
             pamMedia.Direction = ParameterDirection.Output;
             pamMedia.SqlDbType = SqlDbType.Int;
             SqlParameter pamEmpleados = new SqlParameter();
-            pamEmpleados.ParameterName = "@totalEmpleados";
+            pamEmpleados.ParameterName = "@numPersonas";
             pamEmpleados.Direction = ParameterDirection.Output;
             pamEmpleados.SqlDbType = SqlDbType.Int;
 
